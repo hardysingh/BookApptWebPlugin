@@ -1,0 +1,85 @@
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+mat-form-field {
+    width: 97%;
+  }
+  .id-name {
+    width: 35%;
+    margin-right: 5px;
+  }
+  .id-number {
+    width: 55%;
+    margin-left: 5px;
+  }
+  .phone-name {
+    width: 45px;
+    margin-right: 5px;
+  }
+  .country-code {
+    width: 25%;
+    margin-left: 1px;
+  }
+  .phone-number {
+    width: 65%;
+    margin-left: 5px;
+  }
+  .btn-sec {
+    margin-right: 1.2rem !important;
+    text-align: right;
+    margin-top: 0em;
+  }
+  .Update-btn {
+    margin: 5px;
+  }
+  .Discard-btn {
+    margin: 5px;
+  }
+  .text-inside {
+    position: absolute;
+    left: 5px;
+    width: 100%;
+  }
+  @media (max-width: 800px) {
+    .btn-sec {
+      margin-right: 1rem !important;
+    }
+  }
+  @media (max-width: 600px) {
+    .btn-sec {
+      margin-right: 1rem !important;
+    }
+  }
+  .material-icons{
+    font-family: 'Material Icons' !important;
+}
+.example-spacer {
+  flex: 1 1 auto;
+}
+.g1{
+  width: 25% !important ;
+   
+}
+.g2{
+  width:75% !important;
+  left:25%!important;
+}
+
+.fullWidth{
+  width: 100% !important ;
+}
+
+mat-grid-list{
+  padding: 5px !important ;
+}
+.primary-bg{background-color:#00BCD4!important;color: white!important;}
+
+.example-stepper {
+  margin-top: 8px;
+}
+
+.mat-form-field {
+  margin-top: 16px;
+}
+
+/* .fullWidth{
+  width: 50% !important ;
+} */
