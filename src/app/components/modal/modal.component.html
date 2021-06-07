@@ -25,6 +25,27 @@
               <form [formGroup]="firstFormGroup">
                 <ng-template matStepLabel>Please Select Doctor and Time</ng-template>
                 <div fxLayout="row" fxLayoutAlign="space-evenly center" >
+
+                    <mat-card *ngFor="let hcp of hcpList let i = index" [attr.data-index]="i" class="example-card" fxFlex="35" style="padding: 0px 0px 16px 0px;">
+                        <mat-card-header>
+                            <div mat-card-avatar class="example-header-image" style="padding:6px">
+                                <img src="{{hcp.serving_url?hcp.serving_url:'https://wayumd.com/reception/assets/images/doctor_square.svg'}}" alt="{{hcp.title}} {{hcp.first_name}}">
+                            </div>
+                            <mat-card-subtitle style="color:black">{{hcp.title}} {{hcp.first_name}} {{hcp.last_name}}</mat-card-subtitle>
+                            <mat-card-subtitle>&#8377; {{hcp.consult_fee}}</mat-card-subtitle>
+                        </mat-card-header>
+                        
+                        <mat-card-content style="text-align: center;">
+                        <!-- <h3 style="margin-bottom: 5px;">{{hcp.title}} {{hcp.first_name}} {{hcp.last_name}} </h3> -->
+                        <h4 style="margin-top: 5px;">{{hcp.specialty}} </h4>
+                        </mat-card-content>
+                        <mat-card-actions align="center">
+                            <!-- <button mat-stroked-button disabled style="color: black;">&#8377; {{hcp.consult_fee}}</button> -->
+                            <button mat-stroked-button color="primary" (click)="getAvailableSlots()">SELECT</button>
+                        </mat-card-actions>
+                    </mat-card>
+
+
                     <mat-card *ngFor="let hcp of hcpList let i = index" [attr.data-index]="i" class="example-card" fxFlex="35" style="padding: 0px 0px 16px 0px;">
                         
                         <img mat-card-image src="{{hcp.serving_url?hcp.serving_url:'https://wayumd.com/reception/assets/images/doctor_square.svg'}}" alt="{{hcp.title}} {{hcp.first_name}}" style="margin: 0 -16px 10px -16px; height: 100px; object-fit: cover;">
@@ -62,17 +83,17 @@
                 </div>
                 <div fxLayout="column" style="margin-top: 20px;max-height: 240px;overflow-y: auto;">
                     <mat-list>
-                        <mat-list-item>Item 1</mat-list-item>
+                        <mat-list-item>Slot 1</mat-list-item>
                         <mat-divider></mat-divider>
-                        <mat-list-item>Item 2</mat-list-item>
+                        <mat-list-item>Slot 2</mat-list-item>
                         <mat-divider></mat-divider>
-                        <mat-list-item>Item 3</mat-list-item>
+                        <mat-list-item>Slot 3</mat-list-item>
                         <mat-divider></mat-divider>
-                        <mat-list-item>Item 4</mat-list-item>
+                        <mat-list-item>Slot 4</mat-list-item>
                         <mat-divider></mat-divider>
-                        <mat-list-item>Item 5</mat-list-item>
+                        <mat-list-item>Slot 5</mat-list-item>
                         <mat-divider></mat-divider>
-                        <mat-list-item>Item 6</mat-list-item>
+                        <mat-list-item>Slot 6</mat-list-item>
                       </mat-list>
                 </div>
                 <!-- <mat-form-field>

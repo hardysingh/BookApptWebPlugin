@@ -36,7 +36,13 @@ export class ModalComponent implements OnInit {
   public serviceList = [];
   public hcpList = [];
   public todayDate = new Date();
-  public dateArray = [this.todayDate, this.todayDate.getDate() + 1, this.todayDate.getDate() + 2, this.todayDate.getDate() + 3, this.todayDate.getDate() + 4, this.todayDate.getDate() + 5, this.todayDate.getDate() + 6];
+  public secondDate = new Date();
+  public thirdDate = new Date();
+  public fourthDate = new Date();
+  public fifthDate = new Date();
+  public sixthDate = new Date();
+  public seventhDate = new Date();
+  public dateArray = [this.todayDate, this.secondDate.setDate(this.todayDate.getDate() + 1), this.thirdDate.setDate(this.todayDate.getDate() + 2),this.fourthDate.setDate(this.todayDate.getDate() + 3), this.fifthDate.setDate(this.todayDate.getDate() + 4), this.sixthDate.setDate(this.todayDate.getDate() + 5), this.seventhDate.setDate(this.todayDate.getDate() + 6)];
   public selectedCode = '+91';
   public countryCodes = [{
     'name': 'Afghanistan',
