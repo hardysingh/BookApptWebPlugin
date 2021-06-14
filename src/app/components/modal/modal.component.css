@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import url("https://fonts.googleapis.com/css?family=Muli:300,400,500&display=swap");
 mat-form-field {
     width: 97%;
   }
@@ -78,6 +79,24 @@ mat-grid-list{
 
 .mat-form-field {
   margin-top: 16px;
+}
+.pointer{cursor: pointer;}
+.example-card:hover{background-color: #f3f3f3;}
+
+.mat-dialog-container {
+  position: relative!important;
+}
+
+.sticky-modal-footer {
+position: absolute;
+
+bottom: 0;
+left: 0;
+width: 96.3%;
+border-top: 1px solid #efefef;
+background-color: #f3f3f3;
+
+padding: 13px;
 }
 
 /* .fullWidth{

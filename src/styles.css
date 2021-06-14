@@ -6,3 +6,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     flex: 1 1 auto;
   }
   .primary-bg{background-color:#00BCD4!important;color: white!important;}
+  .mat-dialog-container {
+    position: relative!important;
+    height: 95vh!important;
+  }

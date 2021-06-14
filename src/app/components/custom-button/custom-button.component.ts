@@ -31,7 +31,8 @@ export class CustomButtonComponent implements OnInit {
   openDialog(): void {
     console.log(this.text);
     const dialogRef = this.dialog.open(ModalComponent, {
-      width: '700px',
+      width: '800px',
+      height: '95vh',
       data: {hco_id: this.hco_id},
       disableClose: true
     });
