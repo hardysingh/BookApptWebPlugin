@@ -605,10 +605,11 @@ export class ModalComponent implements OnInit {
     this.slotSelected = true;
     console.log('selected time');
     console.log(time);
+    this.selectedTime = time;
     this.docSelected = true;
     this.timeSelected = true;
     this.formFilled = false;
-    this.selectedTime = this.datePipe.transform(time, 'hh:mm a') ;
+    //this.selectedTime = this.datePipe.transform(time, 'hh:mm a') ;
     stepper.next();  
   }
 
@@ -646,15 +647,17 @@ export class ModalComponent implements OnInit {
     console.log(end_time);
     var i, formatted_time;
     //var time_slots = new Array();
-    
+   
     for(var i=start_time; i<=end_time; i = i+15){
       formatted_time = this.convertHours(i);
       var dt = new Date(this.selectedDate);
+      var selectedDateTime = new Date(this.selectedDate);
       dt.setHours(parseInt(formatted_time.split(':')[0]));
       dt.setMinutes(parseInt(formatted_time.split(':')[1]));
       dt.setSeconds(0);
       dt.setMilliseconds(0);
       let scheduleTime = {time:dt.getTime(), booked:false};
+     
       for(var j=0; j < this.hcp_booked_times.length; j++)
       {
           console.log('time comparison time');
@@ -664,6 +667,9 @@ export class ModalComponent implements OnInit {
           if(this.hcp_booked_times[j].start_time == scheduleTime.time){
             scheduleTime.booked = true;
           } 
+      }
+      if(scheduleTime.time < selectedDateTime.getTime()){
+        scheduleTime.booked = true;
       }
       console.log('after calculating time for slots');
       console.log(scheduleTime);
@@ -685,11 +691,13 @@ export class ModalComponent implements OnInit {
       const full_name = this.name.split(/ (.*)/);
       const service_object = this.service;
       var dt = new Date(this.selectedDate);
-      dt.setHours(parseInt(this.selectedTime.split(':')[0]));
-      dt.setMinutes(parseInt(this.selectedTime.split(':')[1]));
-      dt.setSeconds(0);
-      dt.setMilliseconds(0);
-      const scheduleTime = dt.getTime();
+      // dt.setHours(parseInt(this.selectedTime.split(':')[0]));
+      // dt.setMinutes(parseInt(this.selectedTime.split(':')[1]));
+      // dt.setSeconds(0);
+      // dt.setMilliseconds(0);
+      // console.log('converted date');
+      // console.log(dt);
+      // const scheduleTime = dt.getTime();
       const dataList = {
         first_name: full_name[0],
         last_name: full_name[1] || '',
@@ -700,7 +708,7 @@ export class ModalComponent implements OnInit {
         appt_date: this.datePipe.transform(this.selectedDate, 'yyyyMMdd') || '',
         time_slot: this.selectedTime?this.selectedTime:'00:00',
         hcp_id:this.hcp_id?this.hcp_id:0,
-        scheduled_time: scheduleTime?scheduleTime:'00:00',
+        scheduled_time: this.selectedTime?this.selectedTime:'00:00',
         service_options:'',
         consultation_notes: this.message?this.message:'',
         files:'',
