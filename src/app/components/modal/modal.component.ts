@@ -679,6 +679,8 @@ export class ModalComponent implements OnInit {
     this.spinner.show();
     this.ngZone.run(() => {
       console.log('sending request to server');
+      console.log('selected time print');
+      console.log(this.selectedTime);
       console.log( this.secondFormGroup);
       const full_name = this.name.split(/ (.*)/);
       const service_object = this.service;
