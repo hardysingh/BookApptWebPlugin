@@ -8,7 +8,7 @@
             <mat-toolbar-row>
                 <span class="example-spacer"></span>
                 <span>
-                    <h4>BooK Appointment <span ng-if="org_info">({{org_info.org_name}})</span></h4>
+                    <h4 style="font-size:16px;"><span ng-if="org_info" style="font-size:16px;">{{org_info.org_name}}: BooK Appointment </span></h4>
                 </span>
                 <span class="example-spacer"></span>
                 <button align="end" mat-icon-button (click)="onNoClick()">
@@ -29,10 +29,13 @@
             <mat-step [stepControl]="firstFormGroup" errorMessage="Name is required.">
                 <form [formGroup]="firstFormGroup">
                     <ng-template matStepLabel>{{form1_heading}}</ng-template>
-                    <div fxLayout="row" fxLayoutAlign="space-evenly center">
+                    <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutAlign="center">
 
                         <mat-card *ngFor="let hcp of hcpList let i = index" [attr.data-index]="i"
-                            class="example-card pointer" fxFlex="33" style="padding: 5px 2px 16px 2px;"
+                            class="example-card pointer" fxFlex="33"
+                            fxFlex.md="33"
+                            fxFlex.sm="45"
+                            fxFlex.xs="100" style="padding: 5px 2px 16px 2px;margin: 8px;"
                             (click)="getAvailableSlots(hcp, i)" [ngClass]="{'primary-bg' : docIndex === i}">
                             <mat-card-header>
                                 <div *ngIf="hcp.serving_url" style="background-size: contain; margin:2px;"
@@ -86,36 +89,35 @@
                     </div>
 
                     <div *ngIf='!succeed && docSelected' fxLayout="row" fxLayoutAlign="space-evenly center"
-                        style="margin-top: 0px;">
+                        style="margin-top: 15px; overflow-x: auto;overflow-y: hidden;" class="dateTime">
                         <mat-chip-list *ngFor="let dt of dateArray let i = index" [attr.data-index]="i"
                             aria-label="Fish selection">
-                            <mat-chip (click)="selectDate(dt, selectedHcp, i)" style="height: auto; text-align: center;"
+                            <mat-chip (click)="selectDate(dt, selectedHcp, i)" style="height: auto; text-align: center; margin:8px;"
                                 class="pointer" [ngClass]="{'primary-bg' : chipIndex === i}">
-                                {{dt | date:'dd'}}
-                                <br />
-                                {{dt | date:'MMM'}}
-                                <br />
-                                {{dt | date:'yyyy'}}
+                                <span style="font-size: 12px; font-weight: normal;">
+                                    {{dt | date:'dd'}}
+                                    <br />
+                                    <b>{{dt | date:'MMM'}}</b>
+                                    <br />
+                                    {{dt | date:'yyyy'}}
+                                </span>
+                                
                             </mat-chip>
-
-                            <!-- <mat-chip style="height: auto;
-                        text-align: center;" color="primary" selected>12 
-                            <br/>
-                            Jun
-                            <br/>
-                            2021
-                        </mat-chip> -->
 
                         </mat-chip-list>
                     </div>
                     <div *ngIf='!succeed && docSelected && availableSlots!=""' fxLayout="column"
-                        style="margin-top: 10px;max-height: 185px;overflow-y: auto;">
+                        style="margin-top: 15px;max-height: 185px;overflow-x: hidden;overflow-y: auto;">
                         <mat-list>
                             <mat-list-item *ngFor="let time of times_array let i = index" [attr.data-index]="i"
-                                [value]="time" style="border-bottom: 1px solid #ccc;" class="example-card">
-                                <p style="width: 100%;"><span fxFlex="85" style="padding:10px;">{{time | date:'hh:mm a'}}</span>
+                                [value]="time" style="border-bottom: 1px solid #ccc;font-size: 14px;" class="example-card">
+                                <p style="width: 100%;"><span fxFlex="85" fxFlex.md="80"
+                                    fxFlex.sm="70"
+                                    fxFlex.xs="70" style="padding:10px;">{{time.time | date:'hh:mm a'}}</span>
                                     <span fxFlex="15">
-                                        <button mat-stroked-button color="primary" (click)="selectSlot(time, stepper)">BOOK</button></span>
+                                        <button *ngIf="!time.booked" mat-stroked-button color="primary" style="font-size: 14px;" (click)="selectSlot(time.time, stepper)"> BOOK </button>
+                                        <button *ngIf="time.booked" mat-stroked-button color="accent" style="color:red;font-size: 14px;" disabled> BOOKED </button>
+                                    </span>
                                 </p>
                             </mat-list-item>
                         </mat-list>
@@ -169,7 +171,7 @@
                         </div>
 
                         <div fxLayout="row">
-                            <mat-form-field appearance="outline" fxFlex="25" style="margin-right:5px;">
+                            <mat-form-field appearance="outline" fxFlex="25" fxFlex.xs="40" fxFlex.sm="40" style="margin-right:5px;">
                                 <mat-label>Country Code</mat-label>
                                 <mat-select placeholder="Select Country Code" [(ngModel)]="country_code"
                                     formControlName="country_code">
@@ -180,7 +182,7 @@
 
                             </mat-form-field>
 
-                            <mat-form-field appearance="outline" fxFlex>
+                            <mat-form-field appearance="outline" fxFlex fxFlex.xs="60" fxFlex.sm="60" >
                                 <mat-label>Mobile</mat-label>
                                 <input matInput placeholder="Mobile" value={{mobile}} [(ngModel)]="mobile"
                                     formControlName="mobile" required>
@@ -251,7 +253,7 @@
                         </div> -->
                     <div fxLayout="row" *ngIf='formFilled' fxLayoutAlign="center">
                         <div fxLayout="column" fxFlex=100>
-                            <mat-card style="padding: 30px;" fxFlex=100>
+                            <mat-card style="padding: 20px;" fxFlex=100>
                                 <mat-card-header style="background: #f3f3f3; padding: 10px;">
                                     <div *ngIf="selectedHcp.serving_url" style="background-size: contain; margin:2px;"
                                         mat-card-avatar class="example-header-image"
@@ -270,6 +272,7 @@
                                 <mat-card-content style="text-align: left;margin-top:15px;">
                                     <p>Appointment for: {{name}} <p>
                                     <p>Appointment Date: {{selectedDate | date:'MMM dd yyyy'}}</p>
+                                    <p>Appointment Time: {{selectedDate | date:'hh:mm a'}}</p>
                                     <p>Comments: {{message}}</p>
                                 </mat-card-content>
                                 <mat-card-actions align="end">
@@ -295,7 +298,7 @@
                 <ng-template matStepLabel>Confirm</ng-template>
                 <div fxLayout="row" *ngIf='secondFormGroup && succeed' fxLayoutAlign="center">
                     <div fxLayout="column">
-                        <mat-card style="padding: 50px;" fxFlex>
+                        <mat-card style="padding: 40px;" fxFlex>
                             
                             <mat-card-content style="text-align: center;">
                                 <p>Your appointment has been scheduled. For any queries, please contact us.</p>
@@ -317,26 +320,8 @@
 
     </div>
 
-    <!-- <div class="modal-footer" style="position: fixed;
-    bottom: 2.6%;
-    text-align: left;
-    background: #ccc;
-    padding: 10px;
-    left: 0;
-    width: 100%;">
-       
-    </div> -->
     <footer class="sticky-modal-footer">
         Built on WayuMD | A product of Wayu Health 
       </footer>
     </mat-dialog-content>
-    <ng-template #errorDialog style="height: 150px;max-height: 150px;">
-        <h2 matDialogTitle>Error!</h2>
-        <mat-dialog-content style="height:150px;max-height: 150px;">
-          <p>This Time Slot has been already booked!</p>
-        </mat-dialog-content>
-        <mat-dialog-actions align="end">
-          <button mat-button  matDialogClose="" #innerClose="matDialogClose" color="primary">Dismiss</button>
-        </mat-dialog-actions>
-      </ng-template>
 </div>

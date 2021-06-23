@@ -10,3 +10,35 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     position: relative!important;
     height: 95vh!important;
   }
+  mat-card-header-text {
+    margin: 0 10px!important;
+}
+  @media only screen and (max-width: 768px) {
+    .mat-dialog-container {
+      position: relative!important;
+      height: 95vh!important;
+      padding: 20px 0px 0px 0px!important;
+      overflow-x: hidden!important;
+    }
+    .mat-step-label{
+      font-size: 11px!important;
+    }
+    .mat-step-label-selected {
+      font-size: 10px!important;
+      min-width: 80px!important;
+    }
+    .mat-dialog-content { padding: 0 12px!important;overflow-x: hidden!important;}
+    .dateTime{padding-left: 115px;}
+    .mat-stepper-horizontal-line{display: none!important;}
+    .mat-horizontal-stepper-header-container{padding-left: 11px!important;}
+    .mat-horizontal-stepper-header{padding: 0 4px!important;}
+  }
+
+  .mat-form-field-infix {
+    width: auto;
+}
+.mat-form-field-wrapper {
+  padding-bottom: 0px!important;
+  margin: 0px;
+}
+.cdk-overlay-pane{max-width: 90vw!important;}

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, Input, NgZone, TemplateRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, Input, NgZone, TemplateRef, ViewChild, Pipe, PipeTransform } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { GoogleApiService } from 'ng-gapi';
@@ -8,6 +8,7 @@ import {MatStepperModule} from '@angular/material/stepper';
 import { MatStepper } from '@angular/material/stepper';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 import { MatDialog, MatDialogClose } from '@angular/material';
+import {FlexLayoutModule} from "@angular/flex-layout";
 //import {StepperOrientation} from '@angular/material/stepper';
 import {Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
@@ -15,6 +16,11 @@ import { DatePipe } from '@angular/common';
 const url = 'https://apis.google.com/js/client.js?onload=__onGoogleLoaded';
 const gapiOnLoaded = '__onGoogleLoaded';
 const clientName = 'gapi';
+
+@Pipe({
+  name: 'unique',
+  pure: false
+})
 
 @Component({
   selector: 'app-modal',
@@ -217,7 +223,7 @@ export class ModalComponent implements OnInit {
   public org_info = {org_name:''};
   public form1_heading = "Select Doctor";
   public form2_heading = "Share your details";
-  public apiEndPoint = 'https://wayuconnectdev.appspot.com/_ah/api';
+  public apiEndPoint = 'https://wayumd.appspot.com/_ah/api';
   wasFormChanged = false;
   private gapi: any;
   private loadAPI: Promise<any>;
@@ -311,7 +317,8 @@ export class ModalComponent implements OnInit {
             console.log('fetch clinic info result');
             this.spinner.hide();
             console.log(response.result);
-            this.hcpList = response.result.care_team || [];
+            let data = response.result.care_team || [];
+            this.hcpList = data.filter((value, index, self) => self.map(x => x.hcp_id).indexOf(value.hcp_id) == index);
             this.hco_id = this.data.hco_id;
             this.org_info = response.result.clinic_info;
             this.hco_categories =  response.result.hco_categories?response.result.hco_categories:[];
@@ -340,9 +347,11 @@ export class ModalComponent implements OnInit {
   // fetch slots by date for selected HCP
 
   public selectDepartment(date, hcp, department){
-    this.selectDepartment = department;
+    this.time_slots = [];
+    this.selectedDept = department;
+    this.selectedDeptID = department.dpt_id;
     this.selectedHcp = hcp;
-    console.log(this.selectDepartment);
+    console.log(this.selectedDept);
     this.selectedDate = date;
     this.todayDate = date;
     this.spinner.show();
@@ -424,6 +433,7 @@ export class ModalComponent implements OnInit {
   }
 
   public selectDate(date, hcp, index){
+    this.time_slots = [];
     this.chipIndex = index;
     this.selectedHcp = hcp;
     console.log(this.chipIndex);
@@ -465,7 +475,7 @@ export class ModalComponent implements OnInit {
             if(response.result.hcp_slots[i].dpt_id === this.selectedDeptID){
               console.log('department ID');
               console.log(response.result.hcp_slots[i].dpt_id);
-              var start = new Date(this.selectedDate);
+              var start = new Date(date);
               console.log('after spliting start hours');
               console.log(response.result.hcp_slots[i].start_hours.split(':')[0]);
               console.log('after spliting start hours minutes');
@@ -479,7 +489,7 @@ export class ModalComponent implements OnInit {
               console.log(parseInt(response.result.hcp_slots[i].start_hours.split(':')[0]) + 5);
               console.log('after spliting start hours adding 30 minutes');
               console.log(parseInt(response.result.hcp_slots[i].start_hours.split(':')[1]) + 30);
-              var end = new Date(this.selectedDate);
+              var end = new Date(date);
               end.setHours(parseInt(response.result.hcp_slots[i].end_hours.split(':')[0]) + 5);
               end.setMinutes(parseInt(response.result.hcp_slots[i].end_hours.split(':')[1]) + 30);
               end.setSeconds(0);
@@ -508,6 +518,7 @@ export class ModalComponent implements OnInit {
   }
 
   public getAvailableSlots(hcp, index){ 
+    this.time_slots = [];
     this.form1_heading = "Select time slot";
     this.selectedHcp = hcp;
     this.hcp_id = hcp.hcp_id?hcp.hcp_id:0;
@@ -591,25 +602,13 @@ export class ModalComponent implements OnInit {
   }
 
   public selectSlot(time, stepper: MatStepper){
-    let timeMatched = 0;  
-    for(var i=0; i< this.hcp_booked_times.length; i++)
-    {
-      timeMatched++;
-        console.log('time comparison time');
-        console.log(time)
-        console.log('time comparison booked time')
-        console.log(this.hcp_booked_times[i].start_time)
-        if(this.hcp_booked_times[i].start_time == time){
-          const errorDialog = '#errorDialog';
-          alert('This Slot has been already booked. Please select another one');
-          return false;
-        }
-    }
     this.slotSelected = true;
+    console.log('selected time');
+    console.log(time);
     this.docSelected = true;
     this.timeSelected = true;
     this.formFilled = false;
-    this.selectedTime = this.datePipe.transform(time, 'hh:mm') ;
+    this.selectedTime = this.datePipe.transform(time, 'hh:mm a') ;
     stepper.next();  
   }
 
@@ -647,6 +646,7 @@ export class ModalComponent implements OnInit {
     console.log(end_time);
     var i, formatted_time;
     //var time_slots = new Array();
+    
     for(var i=start_time; i<=end_time; i = i+15){
       formatted_time = this.convertHours(i);
       var dt = new Date(this.selectedDate);
@@ -654,7 +654,17 @@ export class ModalComponent implements OnInit {
       dt.setMinutes(parseInt(formatted_time.split(':')[1]));
       dt.setSeconds(0);
       dt.setMilliseconds(0);
-      const scheduleTime = dt.getTime();
+      let scheduleTime = {time:dt.getTime(), booked:false};
+      for(var j=0; j < this.hcp_booked_times.length; j++)
+      {
+          console.log('time comparison time');
+          console.log(scheduleTime)
+          console.log('time comparison booked time')
+          console.log(this.hcp_booked_times[j].start_time)
+          if(this.hcp_booked_times[j].start_time == scheduleTime.time){
+            scheduleTime.booked = true;
+          } 
+      }
       console.log('after calculating time for slots');
       console.log(scheduleTime);
       this.time_slots.push(scheduleTime);
