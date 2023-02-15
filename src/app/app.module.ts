@@ -126,7 +126,7 @@ export class AppModule {
   ngDoBootstrap() {
     const el = createCustomElement(CustomButtonComponent,
       { injector: this.injector });
-    customElements.define('my-button-element', el);
+    customElements.define('book-slots-button', el);
     const el2 = createCustomElement(CustomHeaderComponent,
       { injector: this.injector });
     customElements.define('custom-header', el2);

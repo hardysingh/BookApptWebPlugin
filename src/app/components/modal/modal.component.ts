@@ -213,6 +213,7 @@ export class ModalComponent implements OnInit {
   public selectedDept = '';
   public selectedDeptID = 0;
   public selectedTime = '0:00';
+  public title: string = '';
   public timeSelected:boolean = false;
   public formFilled:boolean = false;
   public chipIndex = 0;
@@ -223,7 +224,7 @@ export class ModalComponent implements OnInit {
   public org_info = {org_name:''};
   public form1_heading = "Select Doctor";
   public form2_heading = "Share your details";
-  public apiEndPoint = 'https://wayumd.appspot.com/_ah/api';
+  public apiEndPoint = 'https://wayuconnectdev.appspot.com/_ah/api';
   wasFormChanged = false;
   private gapi: any;
   private loadAPI: Promise<any>;
@@ -287,6 +288,7 @@ export class ModalComponent implements OnInit {
       selectedDept: ['', Validators.required]
     });
     this.defaultImage = 'https://wayumd.com/reception/assets/images/doctor_square.svg';
+    this.title = this.data.title?this.data.title:'Write Us';
     // this.secondFormGroup = this._formBuilder.group({
     //   secondCtrl: ['', Validators.required]
     // });

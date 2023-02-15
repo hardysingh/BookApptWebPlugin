@@ -9,7 +9,7 @@ const fs = require('fs-extra');
   ];
 
   await fs.ensureDir('elements');
-  await concat(files, 'elements/mywayuplugin.js');
+  await concat(files, 'elements/wayupluginwithslots.js');
   await fs.copyFile(
     './dist/WayuPlugin/styles.css',
     'elements/styles.css'

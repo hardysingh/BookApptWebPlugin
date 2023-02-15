@@ -1,10 +1,10 @@
 <!-- <button>Custom-Button {{buttonText}}</button> -->
 <div>
 
-    <button mat-raised-button (click)="openDialog()">BOOK APPOINTMENT</button>
+  <button mat-raised-button (click)="openDialog()" [style.background]="buttonOptions.buttonColor">{{buttonOptions.buttonText}}</button>
 
-  <!-- <br />
-  <div *ngIf="email">
-    You signed up with: <p>{{email}}</p>
-  </div> -->
+<!-- <br />
+<div *ngIf="email">
+  You signed up with: <p>{{email}}</p>
+</div> -->
 </div>

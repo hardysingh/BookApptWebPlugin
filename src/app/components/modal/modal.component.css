@@ -78,7 +78,7 @@ mat-grid-list{
 }
 
 .mat-form-field {
-  margin-top: 16px;
+  margin: 6px;
 }
 .pointer{cursor: pointer;}
 .example-card:hover{background-color: #f3f3f3;}
@@ -98,6 +98,17 @@ background-color: #f3f3f3;
 color:#3a3a3a;
 padding: 13px;
 font-size: 10px;
+}
+
+.mat-toolbar-multiple-rows {
+  min-height: 45px;
+}
+
+.mat-toolbar-row, .mat-toolbar-single-row {
+  height: 45px;
+}
+::ng-deep .mat-horizontal-stepper-header{
+  pointer-events: none !important;
 }
 
 /* .fullWidth{

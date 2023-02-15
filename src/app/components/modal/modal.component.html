@@ -1,4 +1,4 @@
-<div>
+
     <ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="line-spin-clockwise-fade"
         [fullScreen]="true">
         <p style="color: white"> Loading... </p>
@@ -8,7 +8,7 @@
             <mat-toolbar-row>
                 <span class="example-spacer"></span>
                 <span>
-                    <h4 style="font-size:16px;"><span ng-if="org_info" style="font-size:16px;">{{org_info.org_name}}: BooK Appointment </span></h4>
+                    <h4 style="font-size:16px;"><span ng-if="org_info" style="font-size:16px;" *ngIf="org_info.org_name">{{org_info.org_name}}: {{title}} </span></h4>
                 </span>
                 <span class="example-spacer"></span>
                 <button align="end" mat-icon-button (click)="onNoClick()">
@@ -22,306 +22,308 @@
     <!-- <div class="add-title" align="center">
         <h2 class="primary">Contact us</h2>
     </div> -->
-    <mat-dialog-content style="max-height: 79vh;">
-    <div fxLayout="column" fxLayoutAlign="center center">
+    <mat-dialog-content style="max-height: 79vh;overflow: hidden;">
+        <div fxLayout="column" fxLayoutAlign="center center">
 
-        <mat-horizontal-stepper #stepper style="width: 100%;">
-            <mat-step [stepControl]="firstFormGroup" errorMessage="Name is required.">
-                <form [formGroup]="firstFormGroup">
-                    <ng-template matStepLabel>{{form1_heading}}</ng-template>
-                    <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutAlign="center">
+            <mat-horizontal-stepper #stepper style="width: 100%;max-height:75vh; overflow-y:auto;">
+                <mat-step [stepControl]="firstFormGroup" errorMessage="Name is required.">
+                    <form [formGroup]="firstFormGroup">
+                        <ng-template matStepLabel>{{form1_heading}}</ng-template>
+                        <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutAlign="center">
 
-                        <mat-card *ngFor="let hcp of hcpList let i = index" [attr.data-index]="i"
-                            class="example-card pointer" fxFlex="33"
-                            fxFlex.md="33"
-                            fxFlex.sm="45"
-                            fxFlex.xs="100" style="padding: 5px 2px 16px 2px;margin: 8px;"
-                            (click)="getAvailableSlots(hcp, i)" [ngClass]="{'primary-bg' : docIndex === i}">
-                            <mat-card-header>
-                                <div *ngIf="hcp.serving_url" style="background-size: contain; margin:2px;"
-                                    mat-card-avatar class="example-header-image"
-                                    [ngStyle]="{'background': '#fff  url(' + hcp.serving_url + ') no-repeat'}">
-                                </div>
-                                <div *ngIf="!hcp.serving_url" style="background-size: contain; margin:2px;"
-                                    mat-card-avatar class="example-header-image"
-                                    [ngStyle]="{'background': '#fff  url(' + defaultImage + ') no-repeat'}">
-                                </div>
-                                <mat-card-subtitle style="color:black; font-weight: 600;" [ngClass]="{'primary-bg' : docIndex === i}">
-                                    {{hcp.title}} {{hcp.first_name}} {{hcp.last_name}}</mat-card-subtitle>
-                                    <mat-card-subtitle [ngClass]="{'primary-bg' : docIndex === i}">{{hcp.specialty}}</mat-card-subtitle>
-                                <mat-card-subtitle [ngClass]="{'primary-bg' : docIndex === i}">Consult Fee: &#8377;
-                                    {{hcp.consult_fee}}</mat-card-subtitle>
-                            </mat-card-header>
-
-                            <!-- <mat-card-content style="text-align: center;">
-                                <h4 style="margin-top: 5px;"> </h4>
-                            </mat-card-content> -->
-                            <!-- <mat-card-actions align="center">
-                            <button mat-stroked-button color="primary" (click)="getAvailableSlots()">SELECT</button>
-                        </mat-card-actions> -->
-                        </mat-card>
-
-
-                        <!-- <mat-card *ngFor="let hcp of hcpList let i = index" [attr.data-index]="i" class="example-card" fxFlex="35" style="padding: 0px 0px 16px 0px;">
-                        
-                        <img mat-card-image src="{{hcp.serving_url?hcp.serving_url:'https://wayumd.com/reception/assets/images/doctor_square.svg'}}" alt="{{hcp.title}} {{hcp.first_name}}" style="margin: 0 -16px 10px -16px; height: 100px; object-fit: cover;">
-                        <mat-card-content style="text-align: center;">
-                        <h3 style="margin-bottom: 5px;">{{hcp.title}} {{hcp.first_name}} {{hcp.last_name}} </h3>
-                        <h4 style="margin-top: 5px;">{{hcp.specialty}} </h4>
-                        </mat-card-content>
-                        <mat-card-actions align="center">
-                            <button mat-stroked-button disabled style="color: black;">&#8377; {{hcp.consult_fee}}</button>
-                            <button mat-stroked-button color="primary" (click)="getAvailableSlots()">SELECT</button>
-                        </mat-card-actions>
-                    </mat-card> -->
-
-                    </div>
-
-                    <div *ngIf='!succeed && docSelected' fxLayout="row" fxLayoutAlign="space-evenly center"
-                        style="margin-top: 20px;">
-                        <mat-form-field appearance="outline">
-                            <mat-label>Department & Location</mat-label>
-                            <mat-select [(ngModel)]="selectedDept" name="selectedDept" (selectionChange)="selectDepartment(selectedDate, selectedHcp, selectedDept)" formControlName="selectedDept">
-                                <mat-option [value]="option" *ngFor="let option of hco_departments">{{
-                                    option.department_name }}</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                    </div>
-
-                    <div *ngIf='!succeed && docSelected' fxLayout="row" fxLayoutAlign="space-evenly center"
-                        style="margin-top: 15px; overflow-x: auto;overflow-y: hidden;" class="dateTime">
-                        <mat-chip-list *ngFor="let dt of dateArray let i = index" [attr.data-index]="i"
-                            aria-label="Fish selection">
-                            <mat-chip (click)="selectDate(dt, selectedHcp, i)" style="height: auto; text-align: center; margin:8px;"
-                                class="pointer" [ngClass]="{'primary-bg' : chipIndex === i}">
-                                <span style="font-size: 12px; font-weight: normal;">
-                                    {{dt | date:'dd'}}
-                                    <br />
-                                    <b>{{dt | date:'MMM'}}</b>
-                                    <br />
-                                    {{dt | date:'yyyy'}}
-                                </span>
-                                
-                            </mat-chip>
-
-                        </mat-chip-list>
-                    </div>
-                    <div *ngIf='!succeed && docSelected && availableSlots!=""' fxLayout="column"
-                        style="margin-top: 15px;max-height: 185px;overflow-x: hidden;overflow-y: auto;">
-                        <mat-list>
-                            <mat-list-item *ngFor="let time of times_array let i = index" [attr.data-index]="i"
-                                [value]="time" style="border-bottom: 1px solid #ccc;font-size: 14px;" class="example-card">
-                                <p style="width: 100%;"><span fxFlex="85" fxFlex.md="80"
-                                    fxFlex.sm="70"
-                                    fxFlex.xs="70" style="padding:10px;">{{time.time | date:'hh:mm a'}}</span>
-                                    <span fxFlex="15">
-                                        <button *ngIf="!time.booked" mat-stroked-button color="primary" style="font-size: 14px;" (click)="selectSlot(time.time, stepper)"> BOOK </button>
-                                        <button *ngIf="time.booked" mat-stroked-button color="accent" style="color:red;font-size: 14px;" disabled> BOOKED </button>
-                                    </span>
-                                </p>
-                            </mat-list-item>
-                        </mat-list>
-
-                        <!-- <mat-selection-list  #times [multiple]="false">
-                        <mat-list-option *ngFor="let time of times_array let i = index" [attr.data-index]="i"  [value]="time" style="border-bottom: 1px solid #ccc;">
-                          {{time}}
-                        </mat-list-option>
-                      </mat-selection-list> -->
-
-                    </div>
-                    <div *ngIf='!succeed && docSelected && availableSlots==""' fxLayout="column"
-                        style="margin-top: 20px;max-height: 240px;overflow-y: auto;">
-                        <mat-list>
-                            <mat-list-item>No Slots available</mat-list-item>
-                        </mat-list>
-                    </div>
-                    <!-- <mat-form-field>
-                  <mat-label>Name</mat-label>
-                  <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
-                </mat-form-field> -->
-                    <div>
-                        <!-- <p>Go to a different step to see the error state</p>
-                  <button mat-button matStepperNext>Next</button> -->
-                    </div>
-                </form>
-            </mat-step>
-            <mat-step [stepControl]="secondFormGroup" errorMessage="Address is required.">
-                <form [formGroup]="secondFormGroup" (change)="formChanged()">
-                    <ng-template matStepLabel>{{form2_heading}}</ng-template>
-                    <!-- <mat-form-field>
-                  <mat-label>Address</mat-label>
-                  <input matInput placeholder="Ex. 1 Main St, New York, NY" formControlName="secondCtrl"
-                         required>
-                </mat-form-field> -->
-                <div fxLayout="column">
-                    <div *ngIf='!succeed && docSelected && !formFilled && availableSlots!=""' fxFlex="100">
-                        <div fxLayout="row">
-
-                            <mat-form-field appearance="outline" fxFlex>
-                                <mat-label>Name</mat-label>
-                                <input matInput placeholder="Name" value={{name}} [(ngModel)]="name"
-                                    formControlName="name" required>
-                                <mat-error *ngIf="secondFormGroup.controls.name.hasError('required')">
-                                    Please enter name
-                                </mat-error>
-                                <mat-error *ngIf="secondFormGroup.controls.name.hasError('pattern')">
-                                    Please enter a valid name
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-
-                        <div fxLayout="row">
-                            <mat-form-field appearance="outline" fxFlex="25" fxFlex.xs="40" fxFlex.sm="40" style="margin-right:5px;">
-                                <mat-label>Country Code</mat-label>
-                                <mat-select placeholder="Select Country Code" [(ngModel)]="country_code"
-                                    formControlName="country_code">
-                                    <mat-option [value]="code.code" [selected]="selectedCode === '+91'"
-                                        *ngFor="let code of countryCodes">{{ code.code }}</mat-option>
-
-                                </mat-select>
-
-                            </mat-form-field>
-
-                            <mat-form-field appearance="outline" fxFlex fxFlex.xs="60" fxFlex.sm="60" >
-                                <mat-label>Mobile</mat-label>
-                                <input matInput placeholder="Mobile" value={{mobile}} [(ngModel)]="mobile"
-                                    formControlName="mobile" required>
-                                <mat-error *ngIf="secondFormGroup.controls.mobile.hasError('required')">
-                                    Please enter a valid mobile number
-                                </mat-error>
-                                <mat-error *ngIf="secondFormGroup.controls.mobile.hasError('pattern')">
-                                    Please enter a valid mobile number
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-
-
-
-                        <!-- <mat-grid-tile>
-                                <div class="text-inside">
-                                    <mat-form-field appearance="outline">
-                                        <mat-label>Email</mat-label>
-                                        <input matInput placeholder="Email address" [(ngModel)]="email" formControlName="email">
-                                        
-                                        <mat-error *ngIf="secondFormGroup.controls.email.hasError('pattern')">
-                                            Please enter valid email id
-                                        </mat-error>
-                                    </mat-form-field>
-                                </div>
-                            </mat-grid-tile> -->
-
-                        <div fxLayout="row">
-                            <mat-form-field appearance="outline" fxFlex>
-                                <mat-label>Select service</mat-label>
-                                <mat-select placeholder="Select service" [(ngModel)]="service"
-                                    formControlName="service">
-
-                                    <mat-option *ngFor="let serv of serviceList" [value]="serv">{{ serv.service_name }}
-                                    </mat-option>
-
-                                </mat-select>
-
-                            </mat-form-field>
-                        </div>
-
-
-                        <div fxLayout="row">
-                            <mat-form-field appearance="outline" style="width: 100%;">
-                                <mat-label>Comments</mat-label>
-                                <textarea matInput [(ngModel)]="message" rows="2" value="{{message}}"
-                                    formControlName="message" placeholder="message" required
-                                    style="margin: -10px 0;"></textarea>
-                                <mat-error *ngIf="secondFormGroup.controls.message.hasError('required')">
-                                    Please enter your message
-                                </mat-error>
-                            </mat-form-field>
-                        </div>
-
-                        <div fxLayout="row" fxLayoutAlign="end">
-                            <button [disabled]="!secondFormGroup.valid" mat-raised-button type="button" class="primary-bg Update-btn"
-                               (click)="submitForm()">NEXT</button>
-                           
-                       </div>
-                        
-                    </div>
-
-                        
-
-                        <!-- <div>
-                        <button mat-button matStepperPrevious>Back</button>
-                        <button mat-button matStepperNext>Next</button>
-                        </div> -->
-                    <div fxLayout="row" *ngIf='formFilled' fxLayoutAlign="center">
-                        <div fxLayout="column" fxFlex=100>
-                            <mat-card style="padding: 20px;" fxFlex=100>
-                                <mat-card-header style="background: #f3f3f3; padding: 10px;">
-                                    <div *ngIf="selectedHcp.serving_url" style="background-size: contain; margin:2px;"
+                            <mat-card *ngFor="let hcp of hcpList let i = index" [attr.data-index]="i"
+                                class="example-card pointer" fxFlex="33"
+                                fxFlex.md="33"
+                                fxFlex.sm="45"
+                                fxFlex.xs="100" style="padding: 5px 2px 16px 2px;margin: 8px;"
+                                (click)="getAvailableSlots(hcp, i)" [ngClass]="{'primary-bg' : docIndex === i}">
+                                <mat-card-header>
+                                    <div *ngIf="hcp.serving_url" style="background-size: contain; margin:2px;"
                                         mat-card-avatar class="example-header-image"
-                                        [ngStyle]="{'background': '#fff  url(' + selectedHcp.serving_url + ') no-repeat'}">
+                                        [ngStyle]="{'background': '#fff  url(' + hcp.serving_url + ') no-repeat'}">
                                     </div>
-                                    <div *ngIf="!selectedHcp.serving_url" style="background-size: contain; margin:2px;"
+                                    <div *ngIf="!hcp.serving_url" style="background-size: contain; margin:2px;"
                                         mat-card-avatar class="example-header-image"
                                         [ngStyle]="{'background': '#fff  url(' + defaultImage + ') no-repeat'}">
                                     </div>
                                     <mat-card-subtitle style="color:black; font-weight: 600;" [ngClass]="{'primary-bg' : docIndex === i}">
-                                        {{selectedHcp.title}} {{selectedHcp.first_name}} {{selectedHcp.last_name}}</mat-card-subtitle>
-                                        <mat-card-subtitle [ngClass]="{'primary-bg' : docIndex === i}">{{selectedHcp.specialty}}</mat-card-subtitle>
+                                        {{hcp.title}} {{hcp.first_name}} {{hcp.last_name}}</mat-card-subtitle>
+                                        <mat-card-subtitle [ngClass]="{'primary-bg' : docIndex === i}">{{hcp.specialty}}</mat-card-subtitle>
                                     <mat-card-subtitle [ngClass]="{'primary-bg' : docIndex === i}">Consult Fee: &#8377;
-                                        {{selectedHcp.consult_fee}}</mat-card-subtitle>
+                                        {{hcp.consult_fee}}</mat-card-subtitle>
                                 </mat-card-header>
-                                <mat-card-content style="text-align: left;margin-top:15px;">
-                                    <p>Appointment for: {{name}} <p>
-                                    <p>Appointment Date: {{selectedDate | date:'MMM dd yyyy'}}</p>
-                                    <p>Appointment Time: {{selectedTime | date:'hh:mm a'}}</p>
-                                    <p>Comments: {{message}}</p>
+
+                                <!-- <mat-card-content style="text-align: center;">
+                                    <h4 style="margin-top: 5px;"> </h4>
+                                </mat-card-content> -->
+                                <!-- <mat-card-actions align="center">
+                                <button mat-stroked-button color="primary" (click)="getAvailableSlots()">SELECT</button>
+                            </mat-card-actions> -->
+                            </mat-card>
+
+
+                            <!-- <mat-card *ngFor="let hcp of hcpList let i = index" [attr.data-index]="i" class="example-card" fxFlex="35" style="padding: 0px 0px 16px 0px;">
+                            
+                            <img mat-card-image src="{{hcp.serving_url?hcp.serving_url:'https://wayumd.com/reception/assets/images/doctor_square.svg'}}" alt="{{hcp.title}} {{hcp.first_name}}" style="margin: 0 -16px 10px -16px; height: 100px; object-fit: cover;">
+                            <mat-card-content style="text-align: center;">
+                            <h3 style="margin-bottom: 5px;">{{hcp.title}} {{hcp.first_name}} {{hcp.last_name}} </h3>
+                            <h4 style="margin-top: 5px;">{{hcp.specialty}} </h4>
+                            </mat-card-content>
+                            <mat-card-actions align="center">
+                                <button mat-stroked-button disabled style="color: black;">&#8377; {{hcp.consult_fee}}</button>
+                                <button mat-stroked-button color="primary" (click)="getAvailableSlots()">SELECT</button>
+                            </mat-card-actions>
+                        </mat-card> -->
+
+                        </div>
+
+                        <div *ngIf='!succeed && docSelected' fxLayout="row" fxLayoutAlign="space-evenly center"
+                            style="margin-top: 20px;">
+                            <mat-form-field appearance="outline">
+                                <mat-label>Department & Location</mat-label>
+                                <mat-select [(ngModel)]="selectedDept" name="selectedDept" (selectionChange)="selectDepartment(selectedDate, selectedHcp, selectedDept)" formControlName="selectedDept">
+                                    <mat-option [value]="option" *ngFor="let option of hco_departments">{{
+                                        option.department_name }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </div>
+
+                        <div *ngIf='!succeed && docSelected' fxLayout="row" fxLayoutAlign="space-evenly center"
+                            style="margin-top: 15px; overflow-x: auto;overflow-y: hidden;" class="dateTime">
+                            <mat-chip-list *ngFor="let dt of dateArray let i = index" [attr.data-index]="i"
+                                aria-label="Fish selection">
+                                <mat-chip (click)="selectDate(dt, selectedHcp, i)" style="height: auto; text-align: center; margin:8px;"
+                                    class="pointer" [ngClass]="{'primary-bg' : chipIndex === i}">
+                                    <span style="font-size: 12px; font-weight: normal;">
+                                        {{dt | date:'dd'}}
+                                        <br />
+                                        <b>{{dt | date:'MMM'}}</b>
+                                        <br />
+                                        {{dt | date:'yyyy'}}
+                                    </span>
+                                    
+                                </mat-chip>
+
+                            </mat-chip-list>
+                        </div>
+                        <div *ngIf='!succeed && docSelected && availableSlots!=""' fxLayout="column"
+                            style="margin-top: 15px;max-height: 185px;overflow-x: hidden;overflow-y: auto;">
+                            <mat-list>
+                                <mat-list-item *ngFor="let time of times_array let i = index" [attr.data-index]="i"
+                                    [value]="time" style="border-bottom: 1px solid #ccc;font-size: 14px;" class="example-card">
+                                    <p style="width: 100%;"><span fxFlex="85" fxFlex.md="80"
+                                        fxFlex.sm="70"
+                                        fxFlex.xs="70" style="padding:10px;">{{time.time | date:'hh:mm a'}}</span>
+                                        <span fxFlex="15">
+                                            <button *ngIf="!time.booked" mat-stroked-button color="primary" style="font-size: 14px;" (click)="selectSlot(time.time, stepper)"> BOOK </button>
+                                            <button *ngIf="time.booked" mat-stroked-button color="accent" style="color:red;font-size: 14px;" disabled> BOOKED </button>
+                                        </span>
+                                    </p>
+                                </mat-list-item>
+                            </mat-list>
+
+                            <!-- <mat-selection-list  #times [multiple]="false">
+                            <mat-list-option *ngFor="let time of times_array let i = index" [attr.data-index]="i"  [value]="time" style="border-bottom: 1px solid #ccc;">
+                            {{time}}
+                            </mat-list-option>
+                        </mat-selection-list> -->
+
+                        </div>
+                        <div *ngIf='!succeed && docSelected && availableSlots==""' fxLayout="column"
+                            style="margin-top: 20px;max-height: 240px;overflow-y: auto;">
+                            <mat-list>
+                                <mat-list-item>No Slots available</mat-list-item>
+                            </mat-list>
+                        </div>
+                        <!-- <mat-form-field>
+                    <mat-label>Name</mat-label>
+                    <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
+                    </mat-form-field> -->
+                        <div>
+                            <!-- <p>Go to a different step to see the error state</p>
+                    <button mat-button matStepperNext>Next</button> -->
+                        </div>
+                    </form>
+                </mat-step>
+                <mat-step [stepControl]="secondFormGroup" errorMessage="Address is required.">
+                    <form [formGroup]="secondFormGroup" (change)="formChanged()">
+                        <ng-template matStepLabel>{{form2_heading}}</ng-template>
+                        <!-- <mat-form-field>
+                    <mat-label>Address</mat-label>
+                    <input matInput placeholder="Ex. 1 Main St, New York, NY" formControlName="secondCtrl"
+                            required>
+                    </mat-form-field> -->
+                    <div fxLayout="column">
+                        <div *ngIf='!succeed && docSelected && !formFilled && availableSlots!=""' fxFlex="100">
+                            <div fxLayout="row">
+
+                                <mat-form-field appearance="outline" fxFlex>
+                                    <mat-label>Name</mat-label>
+                                    <input matInput placeholder="Name" value={{name}} [(ngModel)]="name"
+                                        formControlName="name" required>
+                                    <mat-error *ngIf="secondFormGroup.controls.name.hasError('required')">
+                                        Please enter name
+                                    </mat-error>
+                                    <mat-error *ngIf="secondFormGroup.controls.name.hasError('pattern')">
+                                        Please enter a valid name
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+
+                            <div fxLayout="row">
+                                <mat-form-field appearance="outline" fxFlex="25" fxFlex.xs="40" fxFlex.sm="40" style="margin-right:5px;">
+                                    <mat-label>Country Code</mat-label>
+                                    <mat-select placeholder="Select Country Code" [(ngModel)]="country_code"
+                                        formControlName="country_code">
+                                        <mat-option [value]="code.code" [selected]="selectedCode === '+91'"
+                                            *ngFor="let code of countryCodes">{{ code.code }}</mat-option>
+
+                                    </mat-select>
+
+                                </mat-form-field>
+
+                                <mat-form-field appearance="outline" fxFlex fxFlex.xs="60" fxFlex.sm="60" >
+                                    <mat-label>Mobile</mat-label>
+                                    <input matInput placeholder="Mobile" value={{mobile}} [(ngModel)]="mobile"
+                                        formControlName="mobile" required>
+                                    <mat-error *ngIf="secondFormGroup.controls.mobile.hasError('required')">
+                                        Please enter a valid mobile number
+                                    </mat-error>
+                                    <mat-error *ngIf="secondFormGroup.controls.mobile.hasError('pattern')">
+                                        Please enter a valid mobile number
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+
+
+
+                            <!-- <mat-grid-tile>
+                                    <div class="text-inside">
+                                        <mat-form-field appearance="outline">
+                                            <mat-label>Email</mat-label>
+                                            <input matInput placeholder="Email address" [(ngModel)]="email" formControlName="email">
+                                            
+                                            <mat-error *ngIf="secondFormGroup.controls.email.hasError('pattern')">
+                                                Please enter valid email id
+                                            </mat-error>
+                                        </mat-form-field>
+                                    </div>
+                                </mat-grid-tile> -->
+
+                            <div fxLayout="row">
+                                <mat-form-field appearance="outline" fxFlex>
+                                    <mat-label>Select service</mat-label>
+                                    <mat-select placeholder="Select service" [(ngModel)]="service"
+                                        formControlName="service">
+
+                                        <mat-option *ngFor="let serv of serviceList" [value]="serv">{{ serv.service_name }}
+                                        </mat-option>
+
+                                    </mat-select>
+
+                                </mat-form-field>
+                            </div>
+
+
+                            <div fxLayout="row">
+                                <mat-form-field appearance="outline" style="width: 100%;">
+                                    <mat-label>Comments</mat-label>
+                                    <textarea matInput [(ngModel)]="message" rows="2" value="{{message}}"
+                                        formControlName="message" placeholder="message" required
+                                        style="margin: -10px 0;"></textarea>
+                                    <mat-error *ngIf="secondFormGroup.controls.message.hasError('required')">
+                                        Please enter your message
+                                    </mat-error>
+                                </mat-form-field>
+                            </div>
+
+                            <div fxLayout="row" fxLayoutAlign="end">
+                                <button [disabled]="!secondFormGroup.valid" mat-raised-button type="button" class="primary-bg Update-btn"
+                                (click)="submitForm()">NEXT</button>
+                            
+                        </div>
+                            
+                        </div>
+
+                            
+
+                            <!-- <div>
+                            <button mat-button matStepperPrevious>Back</button>
+                            <button mat-button matStepperNext>Next</button>
+                            </div> -->
+                        <div fxLayout="row" *ngIf='formFilled' fxLayoutAlign="center">
+                            <div fxLayout="column" fxFlex=100>
+                                <mat-card style="padding: 20px;" fxFlex=100>
+                                    <mat-card-header style="background: #f3f3f3; padding: 10px;">
+                                        <div *ngIf="selectedHcp.serving_url" style="background-size: contain; margin:2px;"
+                                            mat-card-avatar class="example-header-image"
+                                            [ngStyle]="{'background': '#fff  url(' + selectedHcp.serving_url + ') no-repeat'}">
+                                        </div>
+                                        <div *ngIf="!selectedHcp.serving_url" style="background-size: contain; margin:2px;"
+                                            mat-card-avatar class="example-header-image"
+                                            [ngStyle]="{'background': '#fff  url(' + defaultImage + ') no-repeat'}">
+                                        </div>
+                                        <mat-card-subtitle style="color:black; font-weight: 600;" [ngClass]="{'primary-bg' : docIndex === i}">
+                                            {{selectedHcp.title}} {{selectedHcp.first_name}} {{selectedHcp.last_name}}</mat-card-subtitle>
+                                            <mat-card-subtitle [ngClass]="{'primary-bg' : docIndex === i}">{{selectedHcp.specialty}}</mat-card-subtitle>
+                                        <mat-card-subtitle [ngClass]="{'primary-bg' : docIndex === i}">Consult Fee: &#8377;
+                                            {{selectedHcp.consult_fee}}</mat-card-subtitle>
+                                    </mat-card-header>
+                                    <mat-card-content style="text-align: left;margin-top:15px;">
+                                        <p>Appointment for: {{name}} <p>
+                                        <p>Appointment Date: {{selectedDate | date:'MMM dd yyyy'}}</p>
+                                        <p>Appointment Time: {{selectedTime | date:'hh:mm a'}}</p>
+                                        <p>Comments: {{message}}</p>
+                                    </mat-card-content>
+                                    <mat-card-actions align="end">
+                                        <button mat-raised-button type="button" class="Discard-btn"
+                                        matStepperPrevious>Back
+                                        </button>
+                                        <button mat-raised-button type="submit" class="primary-bg Update-btn"
+                                            (click)="onSaveform(stepper)">Submit
+                                        </button>
+                                    </mat-card-actions>
+                                </mat-card>
+
+                            </div>
+                            
+                        </div>
+
+                            
+
+                    </div>
+                    </form>
+                </mat-step>
+                <mat-step>
+                    <ng-template matStepLabel>Confirm</ng-template>
+                    <div fxLayout="row" *ngIf='secondFormGroup && succeed' fxLayoutAlign="center">
+                        <div fxLayout="column">
+                            <mat-card style="padding: 40px;" fxFlex>
+                                
+                                <mat-card-content style="text-align: center;">
+                                    <p>Your appointment has been scheduled. For any queries, please contact us.</p>
                                 </mat-card-content>
-                                <mat-card-actions align="end">
-                                    <button mat-raised-button type="button" class="Discard-btn"
-                                    matStepperPrevious>Back
-                                    </button>
-                                    <button mat-raised-button type="submit" class="primary-bg Update-btn"
-                                        (click)="onSaveform(stepper)">Submit
-                                    </button>
-                                </mat-card-actions>
+                                
                             </mat-card>
 
                         </div>
                         
                     </div>
-
-                        
-
-                </div>
-                </form>
-            </mat-step>
-            <mat-step>
-                <ng-template matStepLabel>Confirm</ng-template>
-                <div fxLayout="row" *ngIf='secondFormGroup && succeed' fxLayoutAlign="center">
-                    <div fxLayout="column">
-                        <mat-card style="padding: 40px;" fxFlex>
-                            
-                            <mat-card-content style="text-align: center;">
-                                <p>Your appointment has been scheduled. For any queries, please contact us.</p>
-                            </mat-card-content>
-                            
-                        </mat-card>
-
-                    </div>
                     
-                </div>
-                
-                <div>
-                    <!-- <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button (click)="stepper.reset()">Reset</button> -->
-                </div>
-            </mat-step>
-        </mat-horizontal-stepper>
+                    <div>
+                        <!-- <button mat-button matStepperPrevious>Back</button>
+                        <button mat-button (click)="stepper.reset()">Reset</button> -->
+                    </div>
+                </mat-step>
+            </mat-horizontal-stepper>
 
 
-    </div>
+        </div>
 
-    <footer class="sticky-modal-footer">
-        Built on WayuMD | A product of Wayu Health 
-      </footer>
+        <footer class="sticky-modal-footer">
+            Built on WayuMD | A product of Wayu Health 
+        </footer>
     </mat-dialog-content>
-</div>
+    <!-- <mat-dialog-actions align="start">
+        Built on WayuMD | A product of Wayu Health 
+    </mat-dialog-actions> -->

@@ -13,11 +13,14 @@ import { GoogleApiService } from 'ng-gapi';
 export class CustomButtonComponent implements OnInit {
   @Input() public email: string;
   @Input() public name: string;
-  @Input() public mobile: string;
-  @Input() public service: string;
-  @Input() public message: string;
-  @Input() public hco_id: string;
-  @Input() public text: string;
+  @Input() options: {
+    hco_id: string,
+    buttonText: string,
+    buttonColor: string,
+    title: string,
+};
+  allOptions: any;
+  buttonOptions: any;
 
   constructor(public dialog: MatDialog, private gapiService: GoogleApiService) {
     this.gapiService.onLoad().subscribe();
@@ -25,15 +28,23 @@ export class CustomButtonComponent implements OnInit {
 
   ngOnInit() {
     console.log('inside on init method');
-    console.log(this.hco_id);
+    console.log('Options print');
+    this.allOptions = this.options;
+    this.buttonOptions = JSON.parse(this.allOptions);
+    console.log(this.options);
+    console.log('before converting into object');
+    console.log(this.buttonOptions);
+    console.log('After converting into object');
+    console.log(this.buttonOptions);
+   
   }
 
   openDialog(): void {
-    console.log(this.text);
+    console.log(this.buttonOptions.buttonText);
     const dialogRef = this.dialog.open(ModalComponent, {
-      width: '800px',
-      height: '95vh',
-      data: {hco_id: this.hco_id},
+      width: '768px',
+      //height: '70vh',
+      data: {hco_id: this.buttonOptions.hco_id , title: this.buttonOptions.title, buttonText : this.buttonOptions.buttonText},
       disableClose: true
     });
 
@@ -43,9 +54,13 @@ export class CustomButtonComponent implements OnInit {
   }
 
   ngOnChanges() {
-    if(this.hco_id) {
+    if(this.options) {
+      this.allOptions = this.options;
+      this.buttonOptions = JSON.parse(this.allOptions);
+      console.log(this.options);
       console.log('inside on changes method');
-      console.log(this.hco_id);
+      console.log(this.buttonOptions);
+      console.log(this.buttonOptions.hco_id);
     }
   }
 
